@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AirTrip — Sistema de Passagens</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <svg width="28" height="28" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M2 14l9-3 5-9 2 2-4 9 6 4-2 2-6-3-4 6-2-1 3-7-7-1z"></path>
+      </svg>
+      <span>AirTrip</span>
+    </div>
+    <nav>
+      <button class="link" data-nav="home">Pesquisar</button>
+      <button class="link" data-nav="minhas-compras">Minhas reservas</button>
+      <div class="menu">
+        <button class="link outline">Entrar</button>
+        <div class="menu-content">
+          <button class="link" data-nav="login-passageiro">Sou Passageiro</button>
+          <button class="link" data-nav="login-admin">Sou Administrador</button>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main id="app">
+    <section class="view" id="view-login-admin" data-view>
+      <div class="card narrow-center">
+        <h2>Login — Administrador</h2>
+        <p class="small">Use admin / 1234 (padrão da demo).</p>
+        <form id="form-login-admin" class="form-grid narrow">
+          <div class="field"><label>Usuário</label><input id="admin-user" required placeholder="admin"></div>
+          <div class="field"><label>Senha</label><input id="admin-pass" type="password" required placeholder="1234"></div>
+          <div class="actions">
+            <button type="submit" class="btn primary">Entrar</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section class="view" id="view-admin" data-view>
+      <div class="view-header">
+        <button class="link" data-nav="home">◀ Voltar ao site</button>
+        <h2>Painel do Administrador — Voos</h2>
+      </div>
+      <div class="grid-two">
+        <div class="card">
+          <h3>Cadastrar / Editar Voo</h3>
+          <form id="form-voo" class="form-grid">
+            <input type="hidden" id="voo-id">
+            <div class="field"><label>Companhia</label><input id="voo-comp" required placeholder="GOL / LATAM / Azul"></div>
+            <div class="field"><label>Nº do voo</label><input id="voo-num" required placeholder="G3-1920"></div>
+            <div class="field"><label>Origem</label><input id="voo-origem" required placeholder="FOR"></div>
+            <div class="field"><label>Destino</label><input id="voo-dest" required placeholder="GRU"></div>
+            <div class="field"><label>Partida</label><input id="voo-partida" required placeholder="2025-11-23 08:30"></div>
+            <div class="field"><label>Chegada</label><input id="voo-chegada" required placeholder="2025-11-23 12:05"></div>
+            <div class="field"><label>Duração</label><input id="voo-dur" required placeholder="3h35"></div>
+            <div class="field"><label>Paradas</label><select id="voo-stops"><option>0</option><option>1</option><option>2</option></select></div>
+            <div class="field"><label>Preço (R$)</label><input id="voo-preco" required type="number" step="0.01" placeholder="649.90"></div>
+            <div class="actions">
+              <button type="button" class="btn" id="btn-limpar-voo">Limpar</button>
+              <button type="submit" class="btn primary">Salvar</button>
+            </div>
+          </form>
+        </div>
+        <aside class="card">
+          <div class="list" id="lista-admin-voos"></div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="view" id="view-login-passageiro" data-view>
+      <div class="card narrow-center">
+        <h2>Entrar — Passageiro</h2>
+        <form id="form-login-pass" class="form-grid narrow">
+          <div class="field"><label>E-mail</label><input id="pass-email" type="email" required></div>
+          <div class="field"><label>Senha</label><input id="pass-senha" type="password" required></div>
+          <div class="actions">
+            <button type="submit" class="btn primary">Entrar</button>
+          </div>
+        </form>
+        <div class="divider">ou</div>
+        <h3>Criar conta</h3>
+        <form id="form-cadastro" class="form-grid narrow">
+          <div class="field full"><label>Nome completo</label><input id="cad-nome" required></div>
+          <div class="field"><label>CPF</label><input id="cad-cpf" required maxlength="14" placeholder="000.000.000-00"></div>
+          <div class="field"><label>Telefone</label><input id="cad-tel" placeholder="(00) 90000-0000"></div>
+          <div class="field"><label>E-mail</label><input id="cad-email" type="email" required></div>
+          <div class="field"><label>Senha</label><input id="cad-senha" type="password" required></div>
+          <div class="actions">
+            <button type="submit" class="btn primary">Cadastrar</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section class="view active" id="view-home" data-view>
+      <h1>Encontre sua próxima viagem</h1>
+      <form id="form-busca" class="card form-grid" autocomplete="off">
+        <div class="field">
+          <label for="origem">Origem</label>
+          <input id="origem" name="origem" list="lista-cidades" placeholder="Fortaleza (FOR)" required>
+        </div>
+        <div class="field">
+          <label for="destino">Destino</label>
+          <input id="destino" name="destino" list="lista-cidades" placeholder="São Paulo (GRU)" required>
+        </div>
+        <datalist id="lista-cidades">
+          <option value="Fortaleza (FOR)"></option>
+          <option value="São Paulo (GRU)"></option>
+          <option value="Rio de Janeiro (GIG)"></option>
+          <option value="Brasília (BSB)"></option>
+          <option value="Recife (REC)"></option>
+          <option value="Salvador (SSA)"></option>
+          <option value="Belo Horizonte (CNF)"></option>
+        </datalist>
+        <div class="field">
+          <label for="data-ida">Data de ida</label>
+          <input type="date" id="data-ida" name="dataIda" required>
+        </div>
+        <div class="field">
+          <label for="data-volta">Data de volta (opcional)</label>
+          <input type="date" id="data-volta" name="dataVolta">
+        </div>
+        <div class="field">
+          <label for="passageiros">Passageiros</label>
+          <select id="passageiros" name="passageiros">
+            <option>1</option><option>2</option><option>3</option><option>4</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="classe">Classe</label>
+          <select id="classe" name="classe">
+            <option>Econômica</option>
+            <option>Econômica Premium</option>
+            <option>Executiva</option>
+          </select>
+        </div>
+        <div class="actions">
+          <button type="submit" class="btn primary" id="btn-buscar">Buscar voos</button>
+        </div>
+      </form>
+      <div class="tips">
+        <div class="chip">Sem taxas ocultas</div>
+        <div class="chip">Cancelamento fácil</div>
+        <div class="chip">Atendimento 24/7</div>
+      </div>
+    </section>
+
+    <section class="view" id="view-resultados" data-view>
+      <div class="view-header">
+        <button class="link" data-nav="home">◀ Nova busca</button>
+        <h2>Voos disponíveis</h2>
+      </div>
+      <div class="filters card">
+        <div class="filter-group">
+          <label>Paradas</label>
+          <div class="pill-group">
+            <button class="pill" data-filter="stops:0">Direto</button>
+            <button class="pill" data-filter="stops:1">1 parada</button>
+            <button class="pill" data-filter="stops:2+">2+ paradas</button>
+          </div>
+        </div>
+        <div class="filter-group">
+          <label>Horário de partida</label>
+          <input type="range" id="range-hora" min="0" max="23" value="0">
+          <span id="range-hora-label">A partir de 00:00</span>
+        </div>
+        <div class="filter-group">
+          <label>Ordenar</label>
+          <select id="ordenar">
+            <option value="preco">Menor preço</option>
+            <option value="duracao">Menor duração</option>
+            <option value="partida">Mais cedo</option>
+          </select>
+        </div>
+      </div>
+      <div id="lista-voos" class="list"></div>
+    </section>
+
+    <section class="view" id="view-assentos" data-view>
+      <div class="view-header">
+        <button class="link" data-nav="resultados">◀ Voltar</button>
+        <h2>Seleção de assentos</h2>
+      </div>
+      <div class="grid-two">
+        <div class="card">
+          <h3 id="voo-escolhido">Voo</h3>
+          <div class="seat-legend">
+            <span><span class="seat free"></span> Livre</span>
+            <span><span class="seat taken"></span> Ocupado</span>
+            <span><span class="seat selected"></span> Selecionado</span>
+          </div>
+          <div id="mapa-assentos" class="seat-map" role="grid" aria-label="Mapa de assentos"></div>
+        </div>
+        <aside class="card">
+          <h3>Resumo</h3>
+          <div id="resumo-assentos"></div>
+          <button class="btn primary" id="btn-continuar-dados">Continuar</button>
+        </aside>
+      </div>
+    </section>
+
+    <section class="view" id="view-dados" data-view>
+      <div class="view-header">
+        <button class="link" data-nav="assentos">◀ Voltar</button>
+        <h2>Dados do passageiro</h2>
+      </div>
+      <form id="form-dados" class="card form-grid narrow">
+        <div class="field full">
+          <label for="nome">Nome completo</label>
+          <input id="nome" name="nome" required placeholder="Ex.: Jéssica Rodrigues">
+        </div>
+        <div class="field">
+          <label for="cpf">CPF</label>
+          <input id="cpf" name="cpf" required placeholder="000.000.000-00" maxlength="14">
+        </div>
+        <div class="field">
+          <label for="nascimento">Data de nascimento</label>
+          <input type="date" id="nascimento" name="nascimento" required>
+        </div>
+        <div class="field">
+          <label for="email">E-mail</label>
+          <input type="email" id="email" name="email" required>
+        </div>
+        <div class="field">
+          <label for="telefone">Telefone</label>
+          <input id="telefone" name="telefone" placeholder="(00) 90000-0000">
+        </div>
+
+        <div class="field full">
+          <label for="bagagem">Bagagem</label>
+          <select id="bagagem" name="bagagem">
+            <option value="0">Sem bagagem despachada</option>
+            <option value="1">1 mala despachada (23kg)</option>
+            <option value="2">2 malas despachadas (23kg)</option>
+          </select>
+        </div>
+
+        <div class="actions">
+          <button type="button" class="btn" data-nav="assentos">Voltar</button>
+          <button class="btn primary" id="btn-ir-pagamento">Ir para pagamento</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="view" id="view-pagamento" data-view>
+      <div class="view-header">
+        <button class="link" data-nav="dados">◀ Voltar</button>
+        <h2>Pagamento</h2>
+      </div>
+      <div class="grid-two">
+        <form id="form-pagamento" class="card form-grid">
+          <div class="field full">
+            <label>Método</label>
+            <div class="pill-group">
+              <button type="button" class="pill selected" data-pay="credito">Crédito</button>
+              <button type="button" class="pill" data-pay="pix">PIX</button>
+              <button type="button" class="pill" data-pay="boleto">Boleto</button>
+            </div>
+          </div>
+          <div id="pag-credito" class="pay-block">
+            <div class="field full">
+              <label for="nome-cartao">Nome no cartão</label>
+              <input id="nome-cartao" placeholder="Como aparece no cartão">
+            </div>
+            <div class="field">
+              <label for="numero-cartao">Número</label>
+              <input id="numero-cartao" inputmode="numeric" maxlength="19" placeholder="0000 0000 0000 0000">
+            </div>
+            <div class="field">
+              <label for="validade">Validade</label>
+              <input id="validade" placeholder="MM/AA" maxlength="5">
+            </div>
+            <div class="field">
+              <label for="cvv">CVV</label>
+              <input id="cvv" maxlength="4" placeholder="***">
+            </div>
+          </div>
+          <div id="pag-pix" class="pay-block hidden">
+            <p>Um QR Code PIX será gerado na confirmação (simulado).</p>
+          </div>
+          <div id="pag-boleto" class="pay-block hidden">
+            <p>O boleto será disponibilizado após a confirmação (simulado).</p>
+          </div>
+          <div class="actions">
+            <button type="button" class="btn" data-nav="dados">Voltar</button>
+            <button class="btn primary" id="btn-confirmar">Confirmar compra</button>
+          </div>
+        </form>
+        <aside class="card">
+          <h3>Resumo da compra</h3>
+          <div id="resumo-final"></div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="view" id="view-confirmacao" data-view>
+      <div class="card confirm">
+        <h2>✅ Compra confirmada!</h2>
+        <p id="codigo-reserva"></p>
+        <div id="detalhes-confirmacao"></div>
+        <div class="actions center">
+          <button class="btn" data-nav="home">Nova pesquisa</button>
+          <button class="btn outline" id="btn-imprimir">Imprimir / Salvar PDF</button>
+          <button class="btn" data-nav="minhas-compras">Ver Minhas Reservas</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="view-ajuda" data-view>
+      <div class="card">
+        <h2>Ajuda</h2>
+        <p>Precisa de suporte? Envie um e-mail para suporte@airtrip.example</p>
+      </div>
+    </section>
+
+    <section class="view" id="view-minhas-compras" data-view>
+      <div class="card">
+        <h2>Minhas reservas</h2>
+        <div id="lista-reservas" class="list"></div>
+      </div>
+    </section>
+
+    <section class="view" id="view-bilhete" data-view>
+      <div class="card">
+        <h2>Bilhete de Embarque</h2>
+        <div id="bilhete-content"></div>
+        <div class="actions">
+          <button class="btn" data-nav="minhas-compras">Voltar</button>
+          <button class="btn outline" id="btn-bilhete-print">Imprimir / PDF</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>© 2025 AirTrip • Demo educacional</span>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
